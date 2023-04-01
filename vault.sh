@@ -21,6 +21,6 @@ export VAULT_ADDR=http://127.0.0.1:8200
 alias vlogs='journalctl -u vault'
 EOF
 
-sudo systemctl daemon-reload
-sudo systemctl enable vault
-sudo systemctl start vault
+# sudo systemctl daemon-reload
+# sudo systemctl enable vault
+# sudo systemctl start vault

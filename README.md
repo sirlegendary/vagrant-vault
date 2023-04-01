@@ -1,5 +1,7 @@
 # vagrant-vault
 
+Build 3 Vault Clusters. One to unseal the other two.
+
 ## Prerequisite
 
 - vagrant installed

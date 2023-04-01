@@ -34,8 +34,7 @@ vault operator unseal \`cat operator_keys | jq .unseal_keys_b64[0] -r\`;
 vault operator unseal \`cat operator_keys | jq .unseal_keys_b64[2] -r\`;
 vault operator unseal \`cat operator_keys | jq .unseal_keys_b64[4] -r\`;
 export VAULT_TOKEN=\`cat operator_keys | jq .root_token -r\`;
-# sudo touch /var/log/vault-audit.log;
-# vault audit enable file file_path=/var/log/vault_audit.log;
+vault audit enable file file_path=/tmp/vault-audit.log;
 vault secrets enable transit;
 vault write -f transit/keys/autounseal
 vault policy write autounseal autounseal.hcl

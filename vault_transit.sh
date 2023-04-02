@@ -29,16 +29,23 @@ sudo cat << EOF > /home/vagrant/setup.sh
 #!/bin/bash
 set -ex
 
-vault operator init -format=json > operator_keys;
-vault operator unseal \`cat operator_keys | jq .unseal_keys_b64[0] -r\`;
-vault operator unseal \`cat operator_keys | jq .unseal_keys_b64[2] -r\`;
-vault operator unseal \`cat operator_keys | jq .unseal_keys_b64[4] -r\`;
-export VAULT_TOKEN=\`cat operator_keys | jq .root_token -r\`;
-vault audit enable file file_path=/tmp/vault-audit.log;
+sudo touch /opt/vault.creds
+sudo touch /opt/vault-audit.log
+sudo chmod 0755 /opt/vault.creds
+sudo chown vagrant:vagrant /opt/vault.creds
+sudo chown vault:vault /opt/vault-audit.log
+
+vault operator init -format=json > /opt/vault.creds;
+vault operator unseal \`cat /opt/vault.creds | jq .unseal_keys_b64[0] -r\`;
+vault operator unseal \`cat /opt/vault.creds | jq .unseal_keys_b64[2] -r\`;
+vault operator unseal \`cat /opt/vault.creds | jq .unseal_keys_b64[4] -r\`;
+export VAULT_TOKEN=\`cat /opt/vault.creds | jq .root_token -r\`;
+vault audit enable file file_path=/opt/vault-audit.log;
 vault secrets enable transit;
 vault write -f transit/keys/autounseal
 vault policy write autounseal autounseal.hcl
-vault token create -policy="autounseal" -format=json > wrapping_token
+vault token create -orphan -policy="autounseal" -format=json > wrapping_token
+cat wrapping_token | jq .auth.client_token -r
 EOF
 
 chmod +x /home/vagrant/setup.sh

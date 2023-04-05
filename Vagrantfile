@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 VAULT_TRANSIT = 1
-VAULT_CLUSTER_NUMER = 2
+VAULT_CLUSTER_NUMER = 3
 Vagrant.configure(2) do |config|
   # Increase memory for Virtualbox
   config.vm.provider "virtualbox" do |vb|
@@ -23,9 +23,9 @@ Vagrant.configure(2) do |config|
     end
   end
   (0..VAULT_CLUSTER_NUMER-1).each do |i|
-    config.vm.define "vault_cluster_#{i}" do |vault|
+    config.vm.define "vault_node_#{i}" do |vault|
       vault.vm.box = "vault"
-      vault.vm.hostname = "vault-cluster-#{i}"
+      vault.vm.hostname = "vault-node-#{i}"
       vault.vm.provision "shell" do |shell|
         shell.path = "vault.sh"
         shell.args = [i, "10.0.0.#{i + 3}", VAULT_CLUSTER_NUMER]
